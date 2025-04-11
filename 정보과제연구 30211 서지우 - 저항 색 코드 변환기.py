@@ -1,40 +1,47 @@
-color_code = {
-    "black": 0, "brown": 1, "red": 2, "orange": 3, "yellow": 4,
-    "green": 5, "blue": 6, "violet": 7, "gray": 8, "white": 9
-}
+import json
 
-multiplier_code = {
-    "black": 1, "brown": 10, "red": 100, "orange": 1000, "yellow": 10000,
-    "green": 100000, "blue": 1000000, "violet": 10000000, "gray": 100000000, "white": 1000000000,
-    "gold": 0.1, "silver": 0.01
-}
+# JSON 파일에서 딕셔너리 불러오기
+with open("resistor_codes.json", "r") as f:
+    codes = json.load(f)
 
-tolerance_code = {
-    "brown": 1, "red": 2, "green": 0.5, "blue": 0.25, "violet": 0.1, "gray": 0.05, "gold": 5, "silver": 10
-}
+color_code = codes["color_code"]
+multiplier_code = codes["multiplier_code"]
+tolerance_code = codes["tolerance_code"]
 
 def color_to_resistance():
     while True:
         try:
-            bands = input("저항 색 코드를 공백으로 구분하여 입력하세요 (예: yellow violet red gold, 종료: exit): ").strip()
+            bands = input("저항 색 코드를 공백으로 구분하여 입력하세요 (예: yellow violet red gold 또는 brown black black red brown, 종료: exit): ").strip()
             if bands.lower() == "exit":
                 print("프로그램을 종료합니다.")
                 break
 
             bands = bands.split()
-            if len(bands) != 4:
-                print("잘못된 입력입니다. 네 개의 색 코드를 입력하세요.")
+
+            if len(bands) == 4:
+                value = (color_code[bands[0]] * 10 + color_code[bands[1]]) * multiplier_code[bands[2]]
+                tolerance = tolerance_code[bands[3]]
+                print(f"저항값: {value}Ω ±{tolerance}%\n")
+
+            elif len(bands) == 5:
+                value = (color_code[bands[0]] * 100 + color_code[bands[1]] * 10 + color_code[bands[2]]) * multiplier_code[bands[3]]
+                tolerance = tolerance_code[bands[4]]
+                print(f"저항값: {value}Ω ±{tolerance}%\n")
+
+            else:
+                print("잘못된 입력입니다. 색 코드는 4개 또는 5개여야 합니다.")
                 continue
 
-            value = (color_code[bands[0]] * 10 + color_code[bands[1]]) * multiplier_code[bands[2]]
-            tolerance = tolerance_code[bands[3]]
-
-            print(f"저항값: {value}Ω ±{tolerance}%\n")
-
-            again = input("한 번 더 계산하시겠습니까? (Y/N): ").strip().lower()
-            if again != "y":
-                print("프로그램을 종료합니다.")
-                break
+            # Y/N 반복 처리
+            while True:
+                again = input("한 번 더 계산하시겠습니까? (Y/N): ").strip().lower()
+                if again == "y":
+                    break
+                elif again == "n":
+                    print("프로그램을 종료합니다.")
+                    return
+                else:
+                    print("Y 또는 N만 입력해주세요.")
 
         except KeyError:
             print("잘못된 색 코드가 입력되었습니다. 올바른 색상을 입력해주세요.")
@@ -43,3 +50,4 @@ def color_to_resistance():
 
 # 프로그램 실행
 color_to_resistance()
+
