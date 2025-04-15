@@ -1,6 +1,5 @@
 import json
 
-# JSON 파일에서 딕셔너리 불러오기
 with open("resistor_codes.json", "r") as f:
     codes = json.load(f)
 
@@ -32,7 +31,6 @@ def color_to_resistance():
                 print("잘못된 입력입니다. 색 코드는 4개 또는 5개여야 합니다.")
                 continue
 
-            # Y/N 반복 처리
             while True:
                 again = input("한 번 더 계산하시겠습니까? (Y/N): ").strip().lower()
                 if again == "y":
@@ -48,6 +46,5 @@ def color_to_resistance():
         except Exception as e:
             print("오류 발생:", e)
 
-# 프로그램 실행
 color_to_resistance()
 
